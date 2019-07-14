@@ -4,22 +4,19 @@ import React from 'react';
 // Usage:
 // <Defcon />
 
-// based on https://gist.github.com/ArthurGuy/784ce4b95a895752cb07df6a1320c026
-// You will need a php resolver to fetch and transform xml to json
-// Find a basic version under public/Scrips/resolver.php
-
-const apiURL = '';
-const secret = 'Y0UrS3cr3t!tOk3n';
-const target = 'https://www.mi5.gov.uk/UKThreatLevel/UKThreatLevel.xml';
-const format = 'json';
-
-const API = `${apiURL}?secret=${secret}&target=${target}&format=${format}`;
+// copy public/Scripts/resolver.php to a php webserver and edit the secret into it.
+// insert the resolver url and the secret into .env like:
+// REACT_APP_RESOLVER_URL=https://domain.tld/resolver.php
+// REACT_APP_RESOLVER_SECRET=XXXXXXXXXXXXXXXX
 
 export class Defcon extends React.Component {
 
-  constructor(props) {
-    super(props);
-    this.state = { data: [] };  
+  constructor( props ) {
+    super( props );
+    this.state = { 
+      data: [],
+      isLoading: true, 
+    };  
   }
 
   componentDidMount() {
@@ -27,18 +24,21 @@ export class Defcon extends React.Component {
   }
   
   updateData() {
-    //const target = this.props.target;
-    const API = `${apiURL}?secret=${secret}&target=${target}&format=${format}`;
+    const target = 'https://www.mi5.gov.uk/UKThreatLevel/UKThreatLevel.xml';
+    const apiUrl = process.env.REACT_APP_RESOLVER_URL;
+    const secret = process.env.REACT_APP_RESOLVER_SECRET;
+    const format = 'json';
+    const API = `${apiUrl}?secret=${secret}&target=${target}&format=${format}`;
     return fetch(API, {
-      method: 'GET'
+      method: 'POST'
     })
-      .then(response => response.json())
-      .then((data) => {
+      .then( response => response.json() )
+      .then( ( data ) => {
         let title = data[0].channel.item.title;
-        let rawLevel = title.substring(title.indexOf(": ") + 1).toLowerCase().trim();
+        let rawLevel = title.substring( title.indexOf( ": " ) + 1 ).toLowerCase().trim();
         let level = 5;
         let color = 'blue'
-        switch(rawLevel) {
+        switch( rawLevel ) {
           case 'low':
             level = 5;
             color = 'blue';
@@ -74,29 +74,27 @@ export class Defcon extends React.Component {
           source: target,
           date: datetime,
         }];
-        this.setState({ data: result })
+        this.setState( { data: result, isLoading: false } )
     })
- 
   }
 
   render() {
-    const defcon = this.state.data.map((item, i) => {
+    const defcon = this.state.data.map( ( item, i ) => {
       return (
-        <div key={i} style={{padding: '1px 5px 20px', margin: '0 0 20px 0', border: '3px solid ' + item.color }}>
-          <h4>Current UK Threat Level: {item.rawLevel.toUpperCase()}</h4>
-          Defcon: {item.level}
+        <div key={ i } style={{ padding: '1px 5px 20px', margin: '0 0 20px 0', border: '3px solid ' + item.color }}>
+          <h4>Current UK Threat Level: { item.rawLevel.toUpperCase() }</h4>
+          Defcon: { item.level }
           <br />
-          Source: {item.source}
+          Source: { item.source }
           <br />
-          Date: {item.date}
+          Date: { item.date }
         </div>
       );
     });
     return (
       <div className="defcon">
-        {defcon}
+        { this.state.isLoading ? 'Loading...' : defcon }
       </div>
     );
   }
 }
-

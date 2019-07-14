@@ -7,9 +7,9 @@ import React from 'react';
 export class Audio extends React.Component {
   render() {
     return (
-      <audio {...this.props}>
-        <source src={this.props.src} />
-        {this.children}
+      <audio { ...this.props }>
+        <source src={ this.props.src } />
+        { this.children }
       </audio>
     ); 
   }

@@ -6,8 +6,8 @@ A simple React skeleton App.
 
 ## What is this repository for? ##
 
-* A simple Playground to learn React
-* Version: 0.1.0
+* A simple React Skeleton
+* Version: 0.1.1
 
 
 
@@ -31,6 +31,17 @@ Configure your application by edition package.json` or use yarn to setup the new
 
     yarn init
 
+### API Key storing ###
+
+Can be set into an `.env` file into the main directory. Yarn will read and add them automaticly when call `yarn start`. [Read more](#enviroment)
+
+```
+REACT_APP_RESOLVER_SECRET=YourSecret
+REACT_APP_RESOLVER_URL=https://domein.tld/resolver.php
+REACT_APP_MOCKUP_APIKEY=XXXXXXXXXX
+REACT_APP_WEATHER_APIKEY=XXXXXXXXXX
+REACT_APP_HOST_ENV=staging
+```
 
 
 ## Run your Application ##
@@ -59,8 +70,8 @@ If you are unable to request the Endpoint direclty or only has one which deliver
 ### Yarn ###
 * [yarnpkg.com](https://yarnpkg.com/lang/en/docs/install/)
 * [code.facebook.com](https://code.facebook.com/posts/1840075619545360)
+* [enviroment](https://medium.com/@tacomanator/environments-with-create-react-app-7b645312c09d)
 
 ### Babel ###
 * [babeljs.io](https://babeljs.io/)
 * [babeljs.io/learn-es2015](https://babeljs.io/learn-es2015/)
-

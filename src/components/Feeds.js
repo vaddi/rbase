@@ -4,14 +4,15 @@ import React from 'react';
 // Usage:
 // <Feeds target="https://blog.mvattersen.de/index.php?feed=rss2" />
 
-const apiURL = '';
-const secret = 'Y0UrS3cr3t!tOk3n';
-const format = 'json';
+// copy public/Scripts/resolver.php to a webserver
+// insert the resolver url and the secret into .env like:
+// REACT_APP_RESOLVER_URL=https://domain.tld/resolver.php
+// REACT_APP_RESOLVER_SECRET=XXXXXXXXXXXXXXXX
 
 export class Feeds extends React.Component {
 
-  constructor(props) {
-    super(props);
+  constructor( props ) {
+    super( props );
     this.state = {
       target: props.target,
       data: [],
@@ -25,33 +26,34 @@ export class Feeds extends React.Component {
   
   getData() {
     const target = this.props.target;
-    const format = this.props.format;
     if( target === undefined || target === "" ) return null;
-    const API = `${apiURL}?secret=${secret}&target=${target}&format=${format}`;
+    const apiUrl = process.env.REACT_APP_RESOLVER_URL;
+    const secret = process.env.REACT_APP_RESOLVER_SECRET;
+    const format = this.props.format === undefined ? 'json' : this.props.format;
+    const API = `${apiUrl}?secret=${secret}&target=${target}&format=${format}`;
     return fetch(API, {
       method: 'GET',
     })
-      .then(response => response.json())
-      .then((data) => {
+      .then( response => response.json() )
+      .then( ( data ) => {
         let result = data[0].channel.item;
-        this.setState({ data: result, updateAt: new Date() })
+        this.setState( { data: result, updateAt: new Date() } )
     }); 
   }
 
   render() {
-    const feeds = this.state.data.map((item, i) => {
+    const feeds = this.state.data.map( ( item, i ) => {
       return (
-        <div key={i} className="feed">
-          #{i} - <a href={item.link}>{item.title}</a>
+        <div key={ i } className="feed">
+          #{i} - <a href={ item.link }>{ item.title }</a>
           <br />
-          {item.description}
+          { item.description }
         </div>
       );
     });
     return (
       <div className="feeds">
-        <h3>VaddisBlog Feeds</h3>
-        {feeds}
+        { feeds }
       </div>
     );
   }
